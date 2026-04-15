@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema di Gestione Pazienti — Clinica Morana × TAC Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg:          #000000;
+      --color-surface:     #0D0D0D;
+      --color-surface-2:   #1A1A1A;
+      --color-accent:      #FC882A;
+      --color-accent-dim:  rgba(252, 136, 42, 0.15);
+      --color-accent-glow: rgba(252, 136, 42, 0.35);
+      --color-text:        #FFFFFF;
+      --color-text-muted:  rgba(255,255,255,0.6);
+      --color-border:      rgba(255,255,255,0.08);
+
+      --font-h1:   clamp(44px, 5vw, 76px);
+      --font-h2:   clamp(32px, 3.8vw, 54px);
+      --font-h3:   clamp(20px, 2.2vw, 32px);
+      --font-body: clamp(15px, 1.4vw, 20px);
+      --font-stat: clamp(44px, 5.5vw, 72px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      overflow: hidden;
+    }
+
+    /* ─── SLIDE BASE ─── */
+    .slide {
+      position: fixed;
+      inset: 0;
+      background: var(--color-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    .slide-content {
+      width: 100%;
+      max-width: 1400px;
+      padding: 60px 80px 100px;
+    }
+
+    /* ─── DECORATIVO ─── */
+    .bg-glow {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--color-accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ─── TIPOGRAFIA ─── */
+    .h1 {
+      font-size: var(--font-h1);
+      font-weight: 800;
+      color: var(--color-accent);
+      line-height: 1.1;
+    }
+    .h2 {
+      font-size: var(--font-h2);
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .h3 {
+      font-size: var(--font-h3);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+    .subtitle {
+      font-size: var(--font-body);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .accent-text {
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+
+    /* ─── LOGO ─── */
+    .logo img { height: 44px; object-fit: contain; }
+    .logo-text {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--color-accent);
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 56px;
+      height: 4px;
+      background: var(--color-accent);
+      border-radius: 2px;
+      margin: 20px 0;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 24px var(--color-accent-glow), 0 12px 40px rgba(0,0,0,0.4);
+      background: var(--color-surface-2);
+    }
+
+    /* ─── ICON WRAPPER ─── */
+    .icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--color-accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      transition: all 0.3s ease;
+      font-size: 24px;
+    }
+    .card:hover .icon-wrapper {
+      background: var(--color-accent);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+    }
+
+    /* ─── BUTTON PRIMARY ─── */
+    .btn-primary {
+      background: var(--color-accent);
+      color: #000000;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.02em;
+      font-family: 'Inter', sans-serif;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: #FF9940;
+      transform: scale(1.04);
+      box-shadow: 0 0 30px var(--color-accent-glow);
+    }
+
+    /* ─── SERVICE ITEM ─── */
+    .service-item {
+      padding: 16px 20px;
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+      border-radius: 0 8px 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .service-item:hover {
+      border-left-color: var(--color-accent);
+      background: var(--color-accent-dim);
+      padding-left: 28px;
+    }
+    .service-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      margin-top: 8px;
+      min-width: 8px;
+      flex-shrink: 0;
+    }
+
+    /* ─── PAIN ITEM ─── */
+    .pain-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 24px 28px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .pain-item:hover {
+      border-color: rgba(252,136,42,0.4);
+      background: var(--color-surface-2);
+      transform: translateX(8px);
+    }
+    .pain-icon {
+      font-size: 28px;
+      min-width: 44px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    /* ─── STAT BLOCK ─── */
+    .stat-number {
+      font-size: var(--font-stat);
+      font-weight: 900;
+      color: var(--color-accent);
+      display: block;
+      transition: all 0.3s ease;
+      line-height: 1;
+    }
+    .stat-block {
+      cursor: default;
+      text-align: center;
+      padding: 24px;
+    }
+    .stat-block:hover .stat-number {
+      transform: scale(1.08);
+      text-shadow: 0 0 30px var(--color-accent-glow);
+    }
+
+    /* ─── DIFF ITEM ─── */
+    .diff-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 22px 26px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .diff-item:hover {
+      border-color: var(--color-accent);
+      background: var(--color-surface-2);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+      transform: translateY(-4px);
+    }
+    .diff-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      margin-top: 7px;
+      min-width: 10px;
+      box-shadow: 0 0 8px var(--color-accent-glow);
+      flex-shrink: 0;
+    }
+
+    /* ─── FRECCIA ACCENT ─── */
+    .arrow-accent {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--font-body);
+      font-weight: 600;
+      color: var(--color-accent);
+      padding: 14px 0;
+    }
+    .arrow-accent::before {
+      content: '→';
+      font-size: 20px;
+    }
+
+    /* ─── TAG ─── */
+    .tag {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--color-accent-dim);
+      border: 1px solid rgba(252,136,42,0.3);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── KPI BLOCK ─── */
+    .kpi-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      transition: all 0.3s ease;
+    }
+    .kpi-section:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+      background: var(--color-surface-2);
+    }
+    .kpi-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    /* ─── TRANSFORM ITEM ─── */
+    .transform-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .transform-item:hover {
+      border-color: var(--color-accent);
+      background: var(--color-surface-2);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+      transform: translateX(8px);
+    }
+    .transform-arrow {
+      color: var(--color-accent);
+      font-weight: 700;
+      font-size: 18px;
+      padding: 0 8px;
+    }
+    .from-text {
+      color: var(--color-text-muted);
+      font-size: clamp(14px, 1.3vw, 18px);
+      font-weight: 500;
+    }
+    .to-text {
+      color: var(--color-text);
+      font-size: clamp(14px, 1.3vw, 18px);
+      font-weight: 600;
+    }
+
+    /* ─── GRIDS ─── */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .flex-col { display: flex; flex-direction: column; }
+    .flex-row { display: flex; flex-direction: row; align-items: center; }
+    .gap-8  { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .gap-16 { gap: 16px; }
+    .gap-20 { gap: 20px; }
+    .gap-24 { gap: 24px; }
+    .gap-32 { gap: 32px; }
+    .gap-40 { gap: 40px; }
+    .mt-8   { margin-top: 8px; }
+    .mt-12  { margin-top: 12px; }
+    .mt-16  { margin-top: 16px; }
+    .mt-20  { margin-top: 20px; }
+    .mt-24  { margin-top: 24px; }
+    .mt-32  { margin-top: 32px; }
+    .mt-40  { margin-top: 40px; }
+    .mb-8   { margin-bottom: 8px; }
+    .mb-16  { margin-bottom: 16px; }
+    .text-muted { color: var(--color-text-muted); }
+    .font-body { font-size: var(--font-body); }
+
+    /* ─── NAVIGATION BAR ─── */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(13,13,13,0.95);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .nav-btn:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #000000;
+      box-shadow: 0 0 16px var(--color-accent-glow);
+      transform: scale(1.1);
+    }
+    .slide-counter {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      min-width: 52px;
+      text-align: center;
+    }
+    .progress-track {
+      position: fixed;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      z-index: 1001;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--color-accent);
+      transition: width 0.4s ease;
+      box-shadow: 0 0 8px var(--color-accent-glow);
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 1 — HERO
+    ══════════════════════════════════════════ */
+    #slide-1 .slide-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    #slide-1 .bg-glow {
+      width: 700px;
+      height: 700px;
+      bottom: -250px;
+      right: -150px;
+      opacity: 0.2;
+    }
+    #slide-1 .hero-title {
+      font-size: clamp(40px, 4.5vw, 68px);
+      font-weight: 800;
+      color: var(--color-accent);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    #slide-1 .hero-question {
+      font-size: clamp(22px, 2.5vw, 36px);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.3;
+      margin-bottom: 40px;
+    }
+    #slide-1 .hero-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 8px;
+    }
+    #slide-1 .hero-col {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      transition: all 0.3s ease;
+    }
+    #slide-1 .hero-col:hover {
+      border-color: var(--color-accent);
+      background: var(--color-surface-2);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+      transform: translateY(-4px);
+    }
+    #slide-1 .col-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      margin-bottom: 14px;
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 2 — DA DOVE PARTIAMO
+    ══════════════════════════════════════════ */
+    #slide-2 .slide-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    #slide-2 .bg-glow {
+      width: 500px;
+      height: 500px;
+      top: -150px;
+      left: -150px;
+      opacity: 0.12;
+    }
+    #slide-2 .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 32px;
+      align-items: start;
+    }
+    #slide-2 .filosofia-box {
+      background: var(--color-surface);
+      border: 1px solid rgba(252,136,42,0.25);
+      border-radius: 16px;
+      padding: 32px 36px;
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 3 — COSA SUCCEDE OGGI
+    ══════════════════════════════════════════ */
+    #slide-3 .slide-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    #slide-3 .bg-glow {
+      width: 600px;
+      height: 600px;
+      bottom: -200px;
+      right: -200px;
+      opacity: 0.12;
+    }
+    #slide-3 .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 28px;
+      align-items: start;
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 6 — COSA CONTIENE IL SISTEMA
+    ══════════════════════════════════════════ */
+    #slide-6 .slide-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 9 — STRUTTURA PROGETTO
+    ══════════════════════════════════════════ */
+    #slide-9 .invest-number {
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 900;
+      color: var(--color-accent);
+      line-height: 1;
+      transition: all 0.3s ease;
+    }
+    #slide-9 .invest-block:hover .invest-number {
+      text-shadow: 0 0 40px var(--color-accent-glow);
+      transform: scale(1.05);
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE 11 — CTA
+    ══════════════════════════════════════════ */
+    #slide-11 .slide-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    #slide-11 .bg-glow {
+      width: 800px;
+      height: 800px;
+      bottom: -300px;
+      right: -200px;
+      opacity: 0.22;
+    }
+    #slide-11 .bg-glow-2 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      left: -100px;
+      opacity: 0.1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 1 — HERO
+  ══════════════════════════════════════════ -->
+  <section class="slide active" id="slide-1">
+    <div class="bg-glow" style="width:700px;height:700px;bottom:-250px;right:-150px;opacity:0.2;position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content">
+      <div class="logo mb-16">
+        <img src="logo_tac_agency.svg" alt="TAC Agency" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="logo-text" style="display:none">TAC</span>
+      </div>
+      <span class="label">Clinica Morana</span>
+      <div class="hero-title">Sistema di Gestione Pazienti</div>
+      <div class="hero-question">Quanti pazienti stai perdendo ogni giorno…<br>senza saperlo?</div>
+
+      <div style="all:unset;display:contents;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px;">
+          <!-- Col 1: Il problema -->
+          <div class="card" style="padding:24px 28px;">
+            <div class="col-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--color-accent);margin-bottom:14px;">Il problema</div>
+            <div class="flex-col gap-12">
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Chiamate non gestite</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Richieste lasciate a metà</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Nessun controllo reale</span></div>
+            </div>
+          </div>
+          <!-- Col 2: Cosa facciamo -->
+          <div class="card" style="padding:24px 28px;">
+            <div class="col-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--color-accent);margin-bottom:14px;">Cosa facciamo</div>
+            <div class="flex-col gap-12">
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni contatto viene gestito</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni richiesta riceve risposta</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni richiesta diventa appuntamento</span></div>
+            </div>
+          </div>
+          <!-- Col 3: Obiettivo -->
+          <div class="card" style="padding:24px 28px;">
+            <div class="col-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--color-accent);margin-bottom:14px;">Obiettivo</div>
+            <div class="flex-col gap-12">
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Ridurre a 0 le richieste non gestite</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Trasformare richieste in appuntamenti</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Aumentare gli appuntamenti privati</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-accent mt-32" style="font-size:clamp(15px,1.4vw,19px);">
+        Più controllo. Più conversione. Più fatturato.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 2 — DA DOVE PARTIAMO
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-2">
+    <div style="position:absolute;width:500px;height:500px;top:-150px;left:-150px;opacity:0.12;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content">
+      <span class="label">02 — Approccio</span>
+      <div class="h2">Da dove partiamo</div>
+      <div class="arrow-accent" style="font-size:clamp(18px,2vw,26px);font-weight:700;">
+        Non partiamo portando nuovi pazienti.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:28px;align-items:start;">
+        <!-- Sinistra: partiamo da qui -->
+        <div class="flex-col gap-12">
+          <div class="h3 mb-16">Partiamo da qui</div>
+          <div class="service-item"><div class="service-dot"></div><span class="font-body">Valorizzare ogni richiesta che già arriva</span></div>
+          <div class="service-item"><div class="service-dot"></div><span class="font-body">Non perdere opportunità esistenti</span></div>
+          <div class="service-item"><div class="service-dot"></div><span class="font-body">Organizzare il flusso in modo efficiente</span></div>
+        </div>
+
+        <!-- Destra: filosofia -->
+        <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:32px 36px;">
+          <div class="h3 mb-16">Perché</div>
+          <p class="font-body text-muted" style="line-height:1.7;margin-bottom:24px;">
+            Portare nuovi pazienti senza un sistema significa perderli dall'altra parte.
+          </p>
+          <div class="divider"></div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
+            <div class="arrow-accent" style="padding:8px 0;">Prima ottimizziamo.</div>
+            <div class="arrow-accent" style="padding:8px 0;">Poi cresciamo.</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-accent mt-32" style="font-size:clamp(15px,1.5vw,20px);font-weight:600;color:var(--color-text-muted);">
+        E lo facciamo con un sistema che lavora al posto tuo, ogni giorno.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 3 — COSA SUCCEDE OGGI
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-3">
+    <div style="position:absolute;width:600px;height:600px;bottom:-200px;right:-200px;opacity:0.12;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content">
+      <span class="label">03 — Situazione attuale</span>
+      <div class="h2">Cosa succede oggi (senza sistema)</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px;align-items:start;">
+        <!-- Sinistra: pain point -->
+        <div class="flex-col gap-16">
+          <div class="pain-item">
+            <div class="pain-icon">📞</div>
+            <div>
+              <div class="h3" style="font-size:clamp(16px,1.6vw,22px);margin-bottom:6px;">Chiamate perse o non richiamate</div>
+              <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Il paziente chiama, nessuno risponde. Non richiama.</p>
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">📋</div>
+            <div>
+              <div class="h3" style="font-size:clamp(16px,1.6vw,22px);margin-bottom:6px;">Richieste gestite a metà</div>
+              <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Comunicazioni senza follow-up, senza chiusura.</p>
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">📅</div>
+            <div>
+              <div class="h3" style="font-size:clamp(16px,1.6vw,22px);margin-bottom:6px;">Appuntamenti non fissati</div>
+              <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">L'interesse c'era. Il sistema per convertirlo no.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: dentro la struttura + risultato -->
+        <div class="flex-col gap-20">
+          <div class="card">
+            <div class="kpi-title">Dentro la struttura</div>
+            <div class="flex-col gap-10" style="gap:10px;">
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Operatori senza priorità chiara</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Nessuna distinzione reale privato / convenzionato</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Gestione dipendente dalle persone</span></div>
+            </div>
+          </div>
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:20px 24px;">
+            <div class="flex-col gap-10" style="gap:10px;">
+              <div class="arrow-accent" style="padding:4px 0;font-size:clamp(13px,1.2vw,17px);">Opportunità perse ogni giorno</div>
+              <div class="arrow-accent" style="padding:4px 0;font-size:clamp(13px,1.2vw,17px);">Nessun controllo reale su cosa succede</div>
+              <div class="arrow-accent" style="padding:4px 0;font-size:clamp(13px,1.2vw,17px);">Crescita bloccata, anche se le richieste ci sono</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 4 — COME DEVE FUNZIONARE
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-4">
+    <div style="position:absolute;width:600px;height:600px;top:-200px;left:-100px;opacity:0.1;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content">
+      <span class="label">04 — La visione</span>
+      <div class="h2">Come deve funzionare</div>
+
+      <div class="grid-3 mt-32">
+        <!-- Regole -->
+        <div class="card">
+          <div class="icon-wrapper">⚙️</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);margin-bottom:16px;color:var(--color-accent);">Le regole</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni richiesta viene gestita</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni paziente riceve risposta</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Ogni contatto deve diventare appuntamento</span></div>
+          </div>
+        </div>
+
+        <!-- Struttura -->
+        <div class="card">
+          <div class="icon-wrapper">🏗️</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);margin-bottom:16px;color:var(--color-accent);">Dentro la struttura</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Sistema che guida le priorità</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Focus su appuntamenti privati</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Operatività standardizzata</span></div>
+          </div>
+        </div>
+
+        <!-- Risultato -->
+        <div class="card">
+          <div class="icon-wrapper">📈</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);margin-bottom:16px;color:var(--color-accent);">Il risultato</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Controllo totale su ciò che succede</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Riduzione dipendenza dal personale</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Sistema 24 ore su 24 attivo</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-accent mt-32" style="font-size:clamp(15px,1.5vw,20px);font-weight:600;color:var(--color-text-muted);">
+        Con un sistema che risponde, gestisce e organizza automaticamente.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       NUOVA SLIDE 5 — COME VIENE GESTITA OGNI RICHIESTA
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-5-new">
+    <div style="position:absolute;width:600px;height:600px;top:-200px;right:-150px;opacity:0.15;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">05 — Il processo</span>
+      <div class="h2">Come viene gestita ogni richiesta</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;align-items:start;">
+        <!-- Sinistra: step -->
+        <div class="flex-col gap-16">
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">1</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Risposta immediata</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Nessuna richiesta rimane senza risposta</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">2</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Comprensione del bisogno</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Il sistema capisce cosa vuole il paziente</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">3</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Smistamento corretto</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Privato o convenzionato, urgente o ordinario</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">4</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Fissazione appuntamento o richiamata</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Ogni contatto si chiude con un'azione concreta</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: video Mora -->
+        <div class="flex-col gap-20" style="align-items:center;justify-content:center;">
+          <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:28px 32px;width:100%;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">🎬</div>
+            <div class="h3" style="color:var(--color-accent);margin-bottom:12px;">Guarda come funziona</div>
+            <p class="subtitle" style="margin-bottom:20px;">Mora in azione: risposta, gestione, appuntamento.</p>
+            <div style="width:100%;max-width:320px;margin:0 auto;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
+              <iframe
+                style="width:100%;height:100%;border:none;"
+                src="https://www.youtube.com/embed/t2YPwJXIW90"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 5 — COME ARRIVIAMO A QUESTO RISULTATO
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-5">
+    <div style="position:absolute;width:700px;height:700px;bottom:-250px;right:-200px;opacity:0.15;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">05 — Il metodo</span>
+      <div class="h2">Come arriviamo a questo risultato</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px;align-items:start;">
+        <!-- Sinistra -->
+        <div class="flex-col gap-16">
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:24px 28px;">
+            <div class="flex-col gap-12" style="gap:12px;">
+              <div class="arrow-accent" style="font-size:clamp(16px,1.6vw,22px);font-weight:700;">Non inseriamo caos.</div>
+              <div class="arrow-accent" style="font-size:clamp(16px,1.6vw,22px);font-weight:700;">Inseriamo un sistema.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-title">Cosa fa il sistema</div>
+            <div class="flex-col gap-10" style="gap:10px;">
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Gestisce automaticamente le richieste</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Guida l'utente verso l'appuntamento</span></div>
+              <div class="service-item"><div class="service-dot"></div><span class="font-body">Supporta gli operatori, non li sostituisce</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">È attivo 24 ore su 24</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: 3 pilastri -->
+        <div class="flex-col gap-16">
+          <div class="diff-item">
+            <div class="diff-dot"></div>
+            <div>
+              <div class="h3" style="font-size:clamp(20px,2vw,28px);color:var(--color-accent);">Tutto è tracciato.</div>
+              <p class="subtitle mt-8">Ogni interazione viene registrata e monitorata.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-dot"></div>
+            <div>
+              <div class="h3" style="font-size:clamp(20px,2vw,28px);color:var(--color-accent);">Tutto è misurabile.</div>
+              <p class="subtitle mt-8">Numeri chiari su ogni aspetto del processo.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-dot"></div>
+            <div>
+              <div class="h3" style="font-size:clamp(20px,2vw,28px);color:var(--color-accent);">Tutto è sotto controllo.</div>
+              <p class="subtitle mt-8">Sapete sempre cosa succede, senza dover chiedere.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 6 — COSA CONTIENE IL SISTEMA
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-7">
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">06 — Componenti</span>
+      <div class="h2">Cosa contiene il sistema</div>
+
+      <div class="grid-3 mt-32">
+        <!-- 1. Gestione chiamate -->
+        <div class="card">
+          <div class="icon-wrapper">📞</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);color:var(--color-accent);margin-bottom:8px;">1. Gestione chiamate</div>
+          <div class="divider" style="margin:14px 0;"></div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Risposta automatica alle chiamate</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Comprensione del bisogno del paziente</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Smistamento e fissaggio appuntamenti</span></div>
+          </div>
+        </div>
+
+        <!-- 2. Supporto operatori -->
+        <div class="card">
+          <div class="icon-wrapper">👥</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);color:var(--color-accent);margin-bottom:8px;">2. Supporto operatori</div>
+          <div class="divider" style="margin:14px 0;"></div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Richieste complesse girate agli operatori</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Calendario con richiamate organizzate</span></div>
+          </div>
+        </div>
+
+        <!-- 3. WhatsApp -->
+        <div class="card">
+          <div class="icon-wrapper">💬</div>
+          <div class="h3" style="font-size:clamp(17px,1.7vw,24px);color:var(--color-accent);margin-bottom:8px;">3. WhatsApp integrato</div>
+          <div class="divider" style="margin:14px 0;"></div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Risposte automatiche e manuali</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Follow-up pazienti</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Riattivazione database esistente: contatto ai pazienti già acquisiti per fissare nuovi appuntamenti o con finalità informativa</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-accent mt-24" style="font-size:clamp(15px,1.5vw,20px);font-weight:600;color:var(--color-text-muted);">
+        Il sistema lavora 24/7, anche quando il team è occupato.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 7 — KPI
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-8">
+    <div style="position:absolute;width:500px;height:500px;top:-150px;right:-100px;opacity:0.12;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">07 — Misurazione</span>
+      <div class="h2">Cosa possiamo controllare</div>
+
+      <div class="grid-3 mt-32">
+        <!-- Contatti -->
+        <div class="kpi-section">
+          <div class="kpi-title">Contatti</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Numero di contatti ricevuti</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Numero di contatti gestiti</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">% chiamate perse vs gestite</span></div>
+          </div>
+        </div>
+
+        <!-- Appuntamenti -->
+        <div class="kpi-section">
+          <div class="kpi-title">Appuntamenti</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Numero appuntamenti fissati</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Quanti privati</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Quanti convenzionati</span></div>
+          </div>
+        </div>
+
+        <!-- Operatività -->
+        <div class="kpi-section">
+          <div class="kpi-title">Operatività</div>
+          <div class="flex-col gap-10" style="gap:10px;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Quanti gestiti da AI</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">Quanti gestiti da operatore</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col gap-12 mt-32" style="gap:12px;">
+        <div class="arrow-accent" style="font-size:clamp(15px,1.5vw,20px);font-weight:700;">
+          Tutto sotto controllo, ogni giorno.
+        </div>
+        <div class="arrow-accent" style="font-size:clamp(15px,1.5vw,20px);font-weight:600;color:var(--color-text-muted);">
+          E soprattutto: quanto stai perdendo ogni giorno senza saperlo.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 8 — CONTROLLO REALE (REPORT)
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-9">
+    <div style="position:absolute;width:600px;height:600px;bottom:-200px;left:-150px;opacity:0.12;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">08 — Reportistica</span>
+      <div class="h2">Controllo reale</div>
+      <div class="flex-col gap-8 mt-16" style="gap:8px;">
+        <div class="arrow-accent" style="font-size:clamp(16px,1.7vw,22px);font-weight:700;">
+          Ogni giorno ricevi un report automatico
+        </div>
+        <div class="arrow-accent" style="font-size:clamp(14px,1.4vw,19px);font-weight:500;color:var(--color-text-muted);">
+          Ogni sera hai un riepilogo automatico della giornata
+        </div>
+      </div>
+
+      <div class="grid-2 mt-32">
+        <!-- Metriche -->
+        <div class="card" style="padding:32px 36px;">
+          <div class="kpi-title">Cosa vedi ogni giorno</div>
+          <div class="flex-col gap-12" style="gap:12px;margin-top:8px;">
+            <div class="stat-block" style="text-align:left;padding:12px 0;border-bottom:1px solid var(--color-border);">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <span style="font-size:24px;">📞</span>
+                <div>
+                  <div class="font-body text-muted">Chiamate ricevute</div>
+                </div>
+              </div>
+            </div>
+            <div class="stat-block" style="text-align:left;padding:12px 0;border-bottom:1px solid var(--color-border);">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <span style="font-size:24px;">✅</span>
+                <div>
+                  <div class="font-body text-muted">Chiamate gestite</div>
+                </div>
+              </div>
+            </div>
+            <div class="stat-block" style="text-align:left;padding:12px 0;border-bottom:1px solid var(--color-border);">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <span style="font-size:24px;">📅</span>
+                <div>
+                  <div class="font-body text-muted">Appuntamenti fissati</div>
+                </div>
+              </div>
+            </div>
+            <div class="stat-block" style="text-align:left;padding:12px 0;">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <span style="font-size:24px;">⚖️</span>
+                <div>
+                  <div class="font-body text-muted">Divisione privato / convenzionato</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Il vantaggio -->
+        <div class="flex-col gap-20">
+          <div class="diff-item">
+            <div class="diff-dot"></div>
+            <div>
+              <div class="h3" style="font-size:clamp(18px,1.8vw,26px);color:var(--color-accent);">Sai esattamente cosa sta succedendo</div>
+              <p class="subtitle mt-8">Dati aggiornati ogni giorno, automaticamente.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-dot"></div>
+            <div>
+              <div class="h3" style="font-size:clamp(18px,1.8vw,26px);color:var(--color-accent);">Senza controllare manualmente</div>
+              <p class="subtitle mt-8">Nessun report da compilare, nessuna riunione per capire i numeri.</p>
+            </div>
+          </div>
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:24px 28px;margin-top:8px;">
+            <p class="font-body" style="color:var(--color-text);font-weight:600;line-height:1.6;">
+              Il report arriva da solo.<br>
+              <span class="text-muted">Voi decidete in base ai dati.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 9 — STRUTTURA DEL PROGETTO
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-10">
+    <div style="position:absolute;width:600px;height:600px;bottom:-200px;right:-150px;opacity:0.15;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">09 — Il progetto</span>
+      <div class="h2">Struttura del progetto</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:24px;align-items:start;margin-top:32px;">
+        <!-- Durata -->
+        <div class="card" style="text-align:center;padding:40px 28px;">
+          <div class="icon-wrapper" style="margin:0 auto 20px;">⏱️</div>
+          <div class="h3" style="color:var(--color-accent);margin-bottom:8px;">Affiancamento</div>
+          <div style="font-size:clamp(36px,4vw,56px);font-weight:900;color:var(--color-text);line-height:1;margin:16px 0;transition:all 0.3s ease;" class="stat-number" onmouseenter="this.style.textShadow='0 0 30px rgba(252,136,42,0.35)';this.style.transform='scale(1.08)'" onmouseleave="this.style.textShadow='';this.style.transform='scale(1)'">6 mesi</div>
+          <p class="subtitle" style="margin-bottom:16px;">6 mesi per costruire e ottimizzare la macchina insieme.</p>
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:10px;padding:16px 18px;text-align:left;">
+            <div class="arrow-accent" style="font-size:clamp(13px,1.2vw,16px);font-weight:700;padding:0;">La macchina è tua per sempre.</div>
+            <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);margin-top:8px;">Non stai comprando un servizio a tempo. Stai costruendo un asset operativo che funziona a vita, indipendentemente da noi.</p>
+          </div>
+        </div>
+
+        <!-- Investimento -->
+        <div class="card invest-block" style="text-align:center;padding:40px 28px;cursor:default;" onmouseenter="this.querySelector('.invest-number').style.textShadow='0 0 40px rgba(252,136,42,0.35)';this.querySelector('.invest-number').style.transform='scale(1.05)'" onmouseleave="this.querySelector('.invest-number').style.textShadow='';this.querySelector('.invest-number').style.transform='scale(1)'">
+          <div class="icon-wrapper" style="margin:0 auto 20px;">💶</div>
+          <div class="h3" style="color:var(--color-accent);margin-bottom:8px;">Investimento</div>
+          <div class="invest-number" style="font-size:clamp(36px,4vw,56px);font-weight:900;color:var(--color-accent);line-height:1;margin:16px 0;transition:all 0.3s ease;">14.000€</div>
+          <div class="divider" style="margin:16px auto;"></div>
+          <div class="flex-col gap-8" style="gap:8px;text-align:left;">
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">50% iniziale</span></div>
+            <div class="service-item"><div class="service-dot"></div><span class="font-body">50% dopo 3 mesi</span></div>
+          </div>
+        </div>
+
+        <!-- Video -->
+        <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:20px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:10px;">🎬</div>
+          <div style="width:160px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
+            <iframe
+              style="width:100%;height:100%;border:none;"
+              src="https://www.youtube.com/embed/evUoGISIK7w"
+              allow="autoplay; encrypted-media"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:20px 28px;margin-top:28px;">
+        <p class="font-body" style="color:var(--color-text);font-weight:600;line-height:1.7;">
+          Non è installazione.<br>
+          <span class="text-muted">È affiancamento operativo per ottenere risultati reali.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 10 — EVOLUZIONE FUTURA
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-11">
+    <div style="position:absolute;width:500px;height:500px;top:-150px;right:-100px;opacity:0.12;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">10 — Roadmap</span>
+      <div class="h2">Evoluzione futura</div>
+      <div class="arrow-accent mt-16" style="font-size:clamp(16px,1.6vw,22px);font-weight:700;">
+        Una volta ottimizzato il sistema
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:40px;margin-top:32px;align-items:center;">
+        <!-- Sinistra: logica -->
+        <div class="flex-col gap-16">
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:28px 32px;">
+            <div class="flex-col gap-16" style="gap:16px;">
+              <div class="arrow-accent" style="font-size:clamp(15px,1.5vw,20px);font-weight:700;">Prima sistemiamo</div>
+              <div class="arrow-accent" style="font-size:clamp(15px,1.5vw,20px);font-weight:700;">Poi cresciamo</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destra: step successivi -->
+        <div class="flex-col gap-20">
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">1</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Inserimento Mora</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Dopo aver sistemato il flusso, inseriamo Mora come punto centrale della comunicazione e gestione</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">2</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Piattaforma centralizzata</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Un unico punto di controllo per tutta la gestione pazienti</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">3</div>
+            <div class="diff-item" style="flex:1;">
+              <div>
+                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Acquisizione nuovi pazienti</div>
+                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Con il sistema ottimizzato, la crescita diventa scalabile</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 11 — COSA CAMBIA DAVVERO (CTA)
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="slide-12">
+    <div style="position:absolute;width:800px;height:800px;bottom:-300px;right:-200px;opacity:0.22;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;width:400px;height:400px;top:-100px;left:-100px;opacity:0.1;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+      <span class="label">11 — La trasformazione</span>
+      <div class="h2">Cosa cambia davvero</div>
+      <div class="arrow-accent mt-8" style="font-size:clamp(16px,1.7vw,22px);font-weight:600;color:var(--color-text-muted);margin-bottom:32px;">
+        Non è solo un sistema. È un cambio di gestione.
+      </div>
+
+      <div class="flex-col gap-16" style="margin-bottom:40px;">
+        <div class="transform-item">
+          <span class="from-text" style="min-width:120px;">Da caos</span>
+          <span class="transform-arrow">→</span>
+          <span class="to-text">Controllo totale su ogni richiesta</span>
+        </div>
+        <div class="transform-item">
+          <span class="from-text" style="min-width:120px;">Da perdita</span>
+          <span class="transform-arrow">→</span>
+          <span class="to-text">Conversione sistematica dei contatti</span>
+        </div>
+        <div class="transform-item">
+          <span class="from-text" style="min-width:120px;">Da dipendenza</span>
+          <span class="transform-arrow">→</span>
+          <span class="to-text">Sistema che funziona indipendentemente</span>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;">
+        <div>
+          <p class="font-body text-muted" style="margin-bottom:8px;">L'obiettivo non è lavorare di più.</p>
+          <p style="font-size:clamp(18px,2vw,26px);font-weight:700;color:var(--color-text);">È lavorare meglio e crescere.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <div class="logo">
+            <img src="logo_tac_agency.svg" alt="TAC Agency" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="logo-text" style="display:none">TAC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       NAVIGATION BAR
+  ══════════════════════════════════════════ -->
+  <div class="progress-track">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <nav class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="goToSlide(currentSlide - 1)">&#8592;</button>
+    <span class="slide-counter" id="slideCounter">1 / 11</span>
+    <button class="nav-btn" id="nextBtn" onclick="goToSlide(currentSlide + 1)">&#8594;</button>
+  </nav>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+
+    function updateProgress() {
+      const pct = ((currentSlide + 1) / total) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('slideCounter').textContent = (currentSlide + 1) + ' / 12';
+    }
+
+    function goToSlide(n) {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (n + total) % total;
+      slides[currentSlide].classList.add('active');
+      updateProgress();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goToSlide(currentSlide + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goToSlide(currentSlide - 1);
+    });
+
+    updateProgress();
+  </script>
+</body>
+</html>
