@@ -52,7 +52,9 @@
     .slide-content {
       width: 100%;
       max-width: 1400px;
-      padding: 60px 80px 100px;
+      padding: 40px 80px 80px;
+      max-height: 100vh;
+      box-sizing: border-box;
     }
 
     /* ─── DECORATIVO ─── */
@@ -651,7 +653,7 @@
         </div>
       </div>
 
-      <div class="arrow-accent mt-32" style="font-size:clamp(15px,1.4vw,19px);">
+      <div class="arrow-accent mt-16" style="font-size:clamp(15px,1.4vw,19px);">
         Più controllo. Più conversione. Più fatturato.
       </div>
     </div>
@@ -808,65 +810,61 @@
   ══════════════════════════════════════════ -->
   <section class="slide" id="slide-5-new">
     <div style="position:absolute;width:600px;height:600px;top:-200px;right:-150px;opacity:0.15;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
-    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;padding-top:40px;padding-bottom:80px;">
       <span class="label">05 — Il processo</span>
-      <div class="h2">Come viene gestita ogni richiesta</div>
+      <div class="h2" style="margin-bottom:8px;">Come viene gestita ogni richiesta</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;align-items:start;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:40px;margin-top:20px;align-items:center;">
         <!-- Sinistra: step -->
-        <div class="flex-col gap-16">
-          <div style="display:flex;align-items:flex-start;gap:20px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">1</div>
-            <div class="diff-item" style="flex:1;">
+        <div class="flex-col" style="gap:12px;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#000;flex-shrink:0;">1</div>
+            <div class="diff-item" style="flex:1;padding:14px 20px;">
               <div>
-                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Risposta immediata</div>
-                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Nessuna richiesta rimane senza risposta</p>
+                <div class="h3" style="font-size:clamp(14px,1.4vw,20px);color:var(--color-accent);margin-bottom:4px;">Risposta immediata</div>
+                <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);">Nessuna richiesta rimane senza risposta</p>
               </div>
             </div>
           </div>
-          <div style="display:flex;align-items:flex-start;gap:20px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">2</div>
-            <div class="diff-item" style="flex:1;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#000;flex-shrink:0;">2</div>
+            <div class="diff-item" style="flex:1;padding:14px 20px;">
               <div>
-                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Comprensione del bisogno</div>
-                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Il sistema capisce cosa vuole il paziente</p>
+                <div class="h3" style="font-size:clamp(14px,1.4vw,20px);color:var(--color-accent);margin-bottom:4px;">Comprensione del bisogno</div>
+                <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);">Il sistema capisce cosa vuole il paziente</p>
               </div>
             </div>
           </div>
-          <div style="display:flex;align-items:flex-start;gap:20px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">3</div>
-            <div class="diff-item" style="flex:1;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#000;flex-shrink:0;">3</div>
+            <div class="diff-item" style="flex:1;padding:14px 20px;">
               <div>
-                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Smistamento corretto</div>
-                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Privato o convenzionato, urgente o ordinario</p>
+                <div class="h3" style="font-size:clamp(14px,1.4vw,20px);color:var(--color-accent);margin-bottom:4px;">Smistamento corretto</div>
+                <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);">Privato o convenzionato, urgente o ordinario</p>
               </div>
             </div>
           </div>
-          <div style="display:flex;align-items:flex-start;gap:20px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0;">4</div>
-            <div class="diff-item" style="flex:1;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#000;flex-shrink:0;">4</div>
+            <div class="diff-item" style="flex:1;padding:14px 20px;">
               <div>
-                <div class="h3" style="font-size:clamp(16px,1.6vw,22px);color:var(--color-accent);margin-bottom:6px;">Fissazione appuntamento o richiamata</div>
-                <p class="subtitle" style="font-size:clamp(13px,1.2vw,17px);">Ogni contatto si chiude con un'azione concreta</p>
+                <div class="h3" style="font-size:clamp(14px,1.4vw,20px);color:var(--color-accent);margin-bottom:4px;">Fissazione appuntamento o richiamata</div>
+                <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);">Ogni contatto si chiude con un'azione concreta</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Destra: video Mora -->
-        <div class="flex-col gap-20" style="align-items:center;justify-content:center;">
-          <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:28px 32px;width:100%;text-align:center;">
-            <div style="font-size:48px;margin-bottom:16px;">🎬</div>
-            <div class="h3" style="color:var(--color-accent);margin-bottom:12px;">Guarda come funziona</div>
-            <p class="subtitle" style="margin-bottom:20px;">Mora in azione: risposta, gestione, appuntamento.</p>
-            <div style="width:100%;max-width:320px;margin:0 auto;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
-              <iframe
-                style="width:100%;height:100%;border:none;"
-                src="https://www.youtube.com/embed/t2YPwJXIW90"
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-              </iframe>
-            </div>
+        <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:16px;text-align:center;flex-shrink:0;">
+          <div style="font-size:28px;margin-bottom:8px;">🎬</div>
+          <div style="width:200px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
+            <iframe
+              style="width:100%;height:100%;border:none;"
+              src="https://www.youtube.com/embed/t2YPwJXIW90"
+              allow="autoplay; encrypted-media"
+              allowfullscreen>
+            </iframe>
           </div>
         </div>
       </div>
@@ -1121,39 +1119,42 @@
   ══════════════════════════════════════════ -->
   <section class="slide" id="slide-10">
     <div style="position:absolute;width:600px;height:600px;bottom:-200px;right:-150px;opacity:0.15;border-radius:50%;background:radial-gradient(circle,rgba(252,136,42,0.35) 0%,transparent 70%);pointer-events:none;"></div>
-    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+    <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;height:100%;padding-top:40px;padding-bottom:80px;">
       <span class="label">09 — Il progetto</span>
-      <div class="h2">Struttura del progetto</div>
+      <div class="h2" style="margin-bottom:8px;">Struttura del progetto</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:24px;align-items:start;margin-top:32px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:20px;align-items:center;margin-top:20px;">
         <!-- Durata -->
-        <div class="card" style="text-align:center;padding:40px 28px;">
-          <div class="icon-wrapper" style="margin:0 auto 20px;">⏱️</div>
-          <div class="h3" style="color:var(--color-accent);margin-bottom:8px;">Affiancamento</div>
-          <div style="font-size:clamp(36px,4vw,56px);font-weight:900;color:var(--color-text);line-height:1;margin:16px 0;transition:all 0.3s ease;" class="stat-number" onmouseenter="this.style.textShadow='0 0 30px rgba(252,136,42,0.35)';this.style.transform='scale(1.08)'" onmouseleave="this.style.textShadow='';this.style.transform='scale(1)'">6 mesi</div>
-          <p class="subtitle" style="margin-bottom:16px;">6 mesi per costruire e ottimizzare la macchina insieme.</p>
-          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:10px;padding:16px 18px;text-align:left;">
-            <div class="arrow-accent" style="font-size:clamp(13px,1.2vw,16px);font-weight:700;padding:0;">La macchina è tua per sempre.</div>
-            <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);margin-top:8px;">Non stai comprando un servizio a tempo. Stai costruendo un asset operativo che funziona a vita, indipendentemente da noi.</p>
+        <div class="card" style="text-align:center;padding:28px 20px;">
+          <div class="icon-wrapper" style="margin:0 auto 14px;">⏱️</div>
+          <div class="h3" style="color:var(--color-accent);margin-bottom:6px;font-size:clamp(16px,1.6vw,22px);">Affiancamento</div>
+          <div style="font-size:clamp(32px,3.5vw,48px);font-weight:900;color:var(--color-text);line-height:1;margin:12px 0;transition:all 0.3s ease;" class="stat-number" onmouseenter="this.style.textShadow='0 0 30px rgba(252,136,42,0.35)';this.style.transform='scale(1.08)'" onmouseleave="this.style.textShadow='';this.style.transform='scale(1)'">6 mesi</div>
+          <p class="subtitle" style="font-size:clamp(12px,1.1vw,15px);margin-bottom:12px;">6 mesi per costruire e ottimizzare la macchina insieme.</p>
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:10px;padding:12px 14px;text-align:left;">
+            <div class="arrow-accent" style="font-size:clamp(12px,1.1vw,15px);font-weight:700;padding:0;">La macchina è tua per sempre.</div>
+            <p class="subtitle" style="font-size:clamp(11px,1vw,13px);margin-top:6px;">Non stai comprando un servizio a tempo. Stai costruendo un asset operativo che funziona a vita.</p>
           </div>
         </div>
 
         <!-- Investimento -->
-        <div class="card invest-block" style="text-align:center;padding:40px 28px;cursor:default;" onmouseenter="this.querySelector('.invest-number').style.textShadow='0 0 40px rgba(252,136,42,0.35)';this.querySelector('.invest-number').style.transform='scale(1.05)'" onmouseleave="this.querySelector('.invest-number').style.textShadow='';this.querySelector('.invest-number').style.transform='scale(1)'">
-          <div class="icon-wrapper" style="margin:0 auto 20px;">💶</div>
-          <div class="h3" style="color:var(--color-accent);margin-bottom:8px;">Investimento</div>
-          <div class="invest-number" style="font-size:clamp(36px,4vw,56px);font-weight:900;color:var(--color-accent);line-height:1;margin:16px 0;transition:all 0.3s ease;">14.000€</div>
-          <div class="divider" style="margin:16px auto;"></div>
+        <div class="card invest-block" style="text-align:center;padding:28px 20px;cursor:default;" onmouseenter="this.querySelector('.invest-number').style.textShadow='0 0 40px rgba(252,136,42,0.35)';this.querySelector('.invest-number').style.transform='scale(1.05)'" onmouseleave="this.querySelector('.invest-number').style.textShadow='';this.querySelector('.invest-number').style.transform='scale(1)'">
+          <div class="icon-wrapper" style="margin:0 auto 14px;">💶</div>
+          <div class="h3" style="color:var(--color-accent);margin-bottom:6px;font-size:clamp(16px,1.6vw,22px);">Investimento</div>
+          <div class="invest-number" style="font-size:clamp(32px,3.5vw,48px);font-weight:900;color:var(--color-accent);line-height:1;margin:12px 0;transition:all 0.3s ease;">14.000€</div>
+          <div class="divider" style="margin:12px auto;"></div>
           <div class="flex-col gap-8" style="gap:8px;text-align:left;">
             <div class="service-item"><div class="service-dot"></div><span class="font-body">50% iniziale</span></div>
             <div class="service-item"><div class="service-dot"></div><span class="font-body">50% dopo 3 mesi</span></div>
           </div>
+          <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:10px;padding:12px 14px;text-align:left;margin-top:12px;">
+            <p class="font-body" style="font-size:clamp(11px,1vw,13px);color:var(--color-text);font-weight:600;line-height:1.6;">Non è installazione.<br><span class="text-muted">È affiancamento operativo per risultati reali.</span></p>
+          </div>
         </div>
 
         <!-- Video -->
-        <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:20px;text-align:center;">
-          <div style="font-size:32px;margin-bottom:10px;">🎬</div>
-          <div style="width:160px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
+        <div style="background:var(--color-surface);border:1px solid rgba(252,136,42,0.25);border-radius:16px;padding:16px;text-align:center;flex-shrink:0;">
+          <div style="font-size:28px;margin-bottom:8px;">🎬</div>
+          <div style="width:200px;aspect-ratio:9/16;border-radius:10px;overflow:hidden;">
             <iframe
               style="width:100%;height:100%;border:none;"
               src="https://www.youtube.com/embed/evUoGISIK7w"
@@ -1162,12 +1163,6 @@
             </iframe>
           </div>
         </div>
-      </div>
-      <div style="background:rgba(252,136,42,0.08);border:1px solid rgba(252,136,42,0.2);border-radius:12px;padding:20px 28px;margin-top:28px;">
-        <p class="font-body" style="color:var(--color-text);font-weight:600;line-height:1.7;">
-          Non è installazione.<br>
-          <span class="text-muted">È affiancamento operativo per ottenere risultati reali.</span>
-        </p>
       </div>
     </div>
   </section>
